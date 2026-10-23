@@ -1,0 +1,6 @@
+{
+  "name": "giveway",
+  "private": true,
+  "type": "module",
+  "description": "Zero-dependency marker so Node runs the ES-module test harness with `node tests/model.test.js`. No packages, no install."
+}

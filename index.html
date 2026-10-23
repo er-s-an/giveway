@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GiveWay — what gives way?</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%231c2b4a'/%3E%3Crect x='3' y='7' width='10' height='2' fill='%23faf6ee'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#composer-heading" id="skip-link">Skip to the commitment composer</a>
+  <header class="site-header">
+    <h1>GiveWay</h1>
+    <p class="tagline">Make room for what matters. The week holds exactly 168 hours — a new commitment can only be saved when you name which existing hours give way.</p>
+    <a id="start-action" class="start-action" href="#composer-heading">
+      <span id="start-action-label" class="start-action-label">Start a new commitment</span>
+      <span class="start-action-cue" aria-hidden="true">↓</span>
+    </a>
+  </header>
+
+  <div id="storage-banner" class="warning-banner" role="alert" hidden>
+    <p id="storage-warning"></p>
+    <button id="replace-storage" type="button" class="secondary" hidden>Use sample and replace saved data</button>
+  </div>
+
+  <main>
+    <section id="zone-week" aria-labelledby="week-heading">
+      <h2 id="week-heading" tabindex="-1">The week</h2>
+      <p id="week-note" class="zone-note"></p>
+      <div id="ribbon" class="ribbon" role="img"></div>
+      <ul id="ribbon-legend" class="legend"></ul>
+      <ul id="block-list" class="block-list"></ul>
+      <p id="week-total" class="total-line"></p>
+      <p id="baseline-lock-note" class="zone-note" hidden>The baseline is locked while a decision is saved — undo the decision below to change it, so the receipt's Before view stays honest.</p>
+      <div id="baseline-editor">
+        <button id="baseline-toggle" type="button" class="secondary" aria-expanded="false" aria-controls="baseline-panel">
+          <span class="toggle-label">Build your own baseline</span>
+          <span class="toggle-note">optional — the sample week above is ready to use</span>
+        </button>
+        <div id="baseline-panel" hidden>
+          <h3 id="baseline-editor-heading">Build your own baseline</h3>
+          <p class="zone-note">Replace the sample week with your own named blocks. Free Time is whatever is left over — it is derived, never typed.</p>
+          <div id="baseline-rows"></div>
+          <p id="baseline-free-time" class="zone-note"></p>
+          <p id="baseline-total-error" class="error" hidden></p>
+          <div class="button-row">
+            <button id="add-block" type="button" class="secondary">Add a block</button>
+            <button id="apply-baseline" type="button">Use this baseline</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="zone-composer" aria-labelledby="composer-heading">
+      <h2 id="composer-heading" tabindex="-1">A new commitment?</h2>
+      <p class="zone-note">Name what you are considering saying yes to. Every hour of it must come from somewhere.</p>
+      <div class="field">
+        <label for="candidate-name">Commitment name</label>
+        <input id="candidate-name" type="text" autocomplete="off" placeholder="Weekend hackathon" aria-describedby="candidate-name-error">
+        <p id="candidate-name-error" class="error" hidden></p>
+      </div>
+      <div class="field">
+        <label for="candidate-hours">Weekly hours (0.5 h steps)</label>
+        <input id="candidate-hours" type="number" min="0.5" step="0.5" inputmode="decimal" placeholder="12" aria-describedby="candidate-hours-error">
+        <p id="candidate-hours-error" class="error" hidden></p>
+      </div>
+    </section>
+
+    <section id="zone-concessions" aria-labelledby="concessions-heading" hidden>
+      <h2 id="concessions-heading">What gives way?</h2>
+
+      <div id="demand" class="demand">
+        <p id="demand-number" class="demand-number"></p>
+        <div id="demand-track" class="demand-track" role="img">
+          <div id="demand-fill" class="demand-fill"></div>
+        </div>
+        <p id="demand-caption" class="zone-note"></p>
+      </div>
+
+      <p class="zone-note">Only flexible blocks can give way. Protected and fixed blocks are not offered.</p>
+      <div id="concession-controls"></div>
+
+      <div class="save-panel">
+        <p id="readout" class="readout" aria-live="polite"></p>
+        <p id="save-hint" class="zone-note"></p>
+        <button id="save-decision" type="button" aria-describedby="save-hint" disabled>Save this decision</button>
+      </div>
+
+      <div class="compare-entry">
+        <button id="compare-toggle" type="button" class="secondary">Compare two ways to say yes</button>
+        <p class="zone-note">Set a second option next to this draft and pick later. Nothing is saved until you choose one.</p>
+      </div>
+    </section>
+
+    <section id="zone-compare" aria-labelledby="compare-heading" hidden>
+      <h2 id="compare-heading" tabindex="-1">Compare two ways to say yes</h2>
+      <p class="zone-note">Both plans start from the same week as it stands right now — neither one borrows from the other. Shape each plan, read exactly what it trades, then choose. Only the plan you choose is saved; the other stays a draft.</p>
+
+      <div class="compare-grid">
+        <div class="plan-card" id="plan-a-card" aria-labelledby="plan-a-heading">
+          <h3 id="plan-a-heading">Plan A <span class="plan-tag">your current draft</span></h3>
+          <div class="field">
+            <label for="plan-a-name">Commitment name</label>
+            <input id="plan-a-name" type="text" autocomplete="off" aria-describedby="plan-a-name-error">
+            <p id="plan-a-name-error" class="error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="plan-a-hours">Weekly hours (0.5 h steps)</label>
+            <input id="plan-a-hours" type="number" min="0.5" step="0.5" inputmode="decimal" aria-describedby="plan-a-hours-error">
+            <p id="plan-a-hours-error" class="error" hidden></p>
+          </div>
+          <div id="plan-a-concessions"></div>
+          <div class="plan-decision">
+            <p id="plan-a-readout" class="readout" aria-live="polite"></p>
+            <p id="plan-a-hint" class="zone-note"></p>
+            <button id="choose-a" type="button" aria-describedby="plan-a-hint" disabled>Choose Plan A</button>
+          </div>
+          <div id="plan-a-summary" class="plan-summary" aria-label="What Plan A trades"></div>
+        </div>
+
+        <div class="plan-card" id="plan-b-card" aria-labelledby="plan-b-heading">
+          <h3 id="plan-b-heading">Plan B <span class="plan-tag">starts as a copy of A — change anything</span></h3>
+          <div class="field">
+            <label for="plan-b-name">Commitment name</label>
+            <input id="plan-b-name" type="text" autocomplete="off" aria-describedby="plan-b-name-error">
+            <p id="plan-b-name-error" class="error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="plan-b-hours">Weekly hours (0.5 h steps)</label>
+            <input id="plan-b-hours" type="number" min="0.5" step="0.5" inputmode="decimal" aria-describedby="plan-b-hours-error">
+            <p id="plan-b-hours-error" class="error" hidden></p>
+          </div>
+          <div id="plan-b-concessions"></div>
+          <div class="plan-decision">
+            <p id="plan-b-readout" class="readout" aria-live="polite"></p>
+            <p id="plan-b-hint" class="zone-note"></p>
+            <button id="choose-b" type="button" aria-describedby="plan-b-hint" disabled>Choose Plan B</button>
+          </div>
+          <div id="plan-b-summary" class="plan-summary" aria-label="What Plan B trades"></div>
+        </div>
+      </div>
+
+      <div class="compare-exit">
+        <button id="exit-compare" type="button" class="secondary">Back to one plan</button>
+        <p class="zone-note">Leaving keeps your Plan A draft exactly where it was. Plan B is only ever a draft.</p>
+      </div>
+    </section>
+
+    <section id="zone-receipt" aria-labelledby="receipt-heading" hidden>
+      <h2 id="receipt-heading" tabindex="-1">Receipt</h2>
+      <p id="receipt-summary" class="receipt-summary"></p>
+      <div id="decision-actions" class="button-row" hidden>
+        <button id="edit-decision" type="button" class="secondary">Edit this decision</button>
+        <button id="undo-decision" type="button" class="secondary">Undo this decision</button>
+      </div>
+      <div id="receipt-body"></div>
+    </section>
+  </main>
+
+  <div id="announcer" class="visually-hidden" aria-live="polite"></div>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>
